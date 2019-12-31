@@ -1,0 +1,18 @@
+* day-1: Introduction to the beagle-boards and basic applications
+** Introduction  to the beagle boards. 
+** Beagle software
+** Developing applications
+** The linux file system and commands
+* day-2: Control versions and interfacing electronics
+** git for control version2
+** C and C++
+** GPIO interfacing
+** 4. Bone scripts
+** UART communication
+* day-3: The internet of things
+** A beagle board IoT sensor
+** Sensor web server
+** Linux cron scheduler
+** QT rich user interface
+* day-4: The project
+** project development
