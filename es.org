@@ -11,6 +11,19 @@
     + SSH connection 
     ssh -X debian@192.168.7.2
     debian:temppwd
+*** Error connection 
+    When getting the error:
+
+#+begin_src 
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+@       WARNING: POSSIBLE DNS SPOOFING DETECTED!          @
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+The ECDSA host key for beaglebone.local has changed,
+and the key for the corresponding IP address 2806:103e:5:50f4:3ad2:69ff:fef9:46b4
+#+end_src
+
+you have to edit the '.ssh/known_hosts' file, and delete the lien  that contains the offending key and the corresponding IP address given the warning. 
+
 *** Sharing the internet through usb 
 *** Wi-Fi
 To connect to your Wireless network type the following command in the terminal window:
@@ -30,6 +43,7 @@ connected wifi_506583d4fc5e_544e434150413937414239_managed_psk
 connmanctl> quit
 $ping www.google.com
 #+end_src
+** Beagle software
 *** Basic File System Commands
 
 | Name              | Command | options                               | example                          |
@@ -50,6 +64,23 @@ $ping www.google.com
 |                   |         |                                       | current folder, other one        |
 |                   |         |                                       | creates folder in root directory |
 |-------------------+---------+---------------------------------------+----------------------------------|
+| Delete a          | rm      | -r recursive (use for directories)    | rm sample.txt                    |
+| file or directory |         | -d remove empty directory             | rm -r test                       |
+|-------------------+---------+---------------------------------------+----------------------------------|
+| Copy a file       | cp      | -r recursivec copy                    | cp a.txt b.txt                   |
+| or directory      |         | -u copy only if the source is newer   | cp test-a test-b                 |
+|                   |         | -v verbose (show output)              |                                  |
+|-------------------+---------+---------------------------------------+----------------------------------|
+| Move a file or    | mv      | -i prompts before overwrite           | mv a.txt c.txt                   |
+| directory         |         | No -r; Moving into the same directory | mv test example                  |
+|                   |         | performs a renaming                   |                                  |
+|-------------------+---------+---------------------------------------+----------------------------------|
+|                   | touch   |                                       |                                  |
+|-------------------+---------+---------------------------------------+----------------------------------|
+|                   | more    |                                       |                                  |
+|-------------------+---------+---------------------------------------+----------------------------------|
+|                   | cal     |                                       |                                  |
+|-------------------+---------+---------------------------------------+----------------------------------|
 |                   |         |                                       |                                  |
 
 *** Terminal 
@@ -62,12 +93,147 @@ $ping www.google.com
 | CTRL-u  | Cut from start of line |
 | CTRL-k  | Cut to end of line     |
 | CTRL-r  | Search history         |
+| !!      | Repeat last command    |
+| Tab key | Autocompletes          |
 |         |                        |
-!!
-	
-Repeat last command
-** Beagle software
+|---------+------------------------|
+
+*** Package management 
+| Command                            | Debian               |
+|------------------------------------+----------------------|
+| Install a package                  | sudo apt install vim |
+| Upgrade the package in your system | sudo apt upgrade     |
+|                                    |                      |
+|------------------------------------+----------------------|
+|                                    |                      |
+
+*** Basic file editing with VIM
+*** Expanding the file system 
+
+with 'lsblk':
+
+#+begin_src 
+debian@beaglebone:~$ lsblk
+NAME         MAJ:MIN RM  SIZE RO TYPE MOUNTPOINT
+mmcblk0      179:0    0 28.9G  0 disk 
+`-mmcblk0p1  179:1    0  3.5G  0 part /
+mmcblk1      179:8    0  3.6G  0 disk 
+`-mmcblk1p1  179:9    0  3.6G  0 part 
+mmcblk1boot0 179:16   0    2M  1 disk 
+mmcblk1boot1 179:24   0    2M  1 disk 
+mmcblk1rpmb  179:32   0  512K  0 disk 
+debian@beaglebone:~$ 
+#+end_src
+ 
+then df -k:
+#+begin_src 
+debian@beaglebone:~$ df -k
+Filesystem     1K-blocks    Used Available Use% Mounted on
+udev              220088       0    220088   0% /dev
+tmpfs              49496    5628     43868  12% /run
+/dev/mmcblk0p1   3558936 2233396   1125044  67% /
+tmpfs             247468       0    247468   0% /dev/shm
+tmpfs               5120       4      5116   1% /run/lock
+tmpfs             247468       0    247468   0% /sys/fs/cgroup
+tmpfs              49492       0     49492   0% /run/user/1000
+#+end_src
+
+we have to use some tools at '/opt/scripts/tools/'
+#+begin_src 
+debian@beaglebone:/opt/scripts/tools$ sudo ./grow_partition.sh 
+[sudo] password for debian: 
+Media: [/dev/mmcblk0]
+sfdisk: 2.26.x or greater
+Disk /dev/mmcblk0: 28.9 GiB, 31016878080 bytes, 60579840 sectors
+Units: sectors of 1 * 512 = 512 bytes
+Sector size (logical/physical): 512 bytes / 512 bytes
+I/O size (minimum/optimal): 512 bytes / 512 bytes
+Disklabel type: dos
+Disk identifier: 0xbecca426
+...
+
+sudo reboot
+#+end_src
+
+
+Now is sure to update packages or kernel with 'sudo apt upgrade', and 'uname -a'.
+
 ** Developing applications
+*** On-Board LEDs
+ first go to:
+
+ #+begin_src 
+ cd /sys/class/leds/
+ #+end_src
+
+then, follow the next commands for the ~beaglebone:green:usr3~:
+
+#+begin_src 
+debian@beaglebone:/sys/class/leds$ ls
+beaglebone:green:usr0  beaglebone:green:usr2  wl18xx_bt_en
+beaglebone:green:usr1  beaglebone:green:usr3
+debian@beaglebone:/sys/class/leds$ cd beaglebone\:green\:usr3
+debian@beaglebone:/sys/class/leds/beaglebone:green:usr3$ ls
+brightness  device  max_brightness  power  subsystem  trigger  uevent
+debian@beaglebone:/sys/class/leds/beaglebone:green:usr3$ cat trigger 
+none rc-feedback rfkill-any kbd-scrolllock kbd-numlock kbd-capslock kbd-kanalock kbd-shiftlock kbd-altgrlock kbd-ctrllock kbd-altlock kbd-shiftllock kbd-shiftrlock kbd-ctrlllock kbd-ctrlrlock usb-gadget usb-host mmc0 [mmc1] mmc2 timer oneshot disk-activity ide-disk mtd nand-disk heartbeat backlight gpio cpu cpu0 activity default-on panic netdev bluetooth-power hci0-power rfkill0 rfkill1 phy0rx phy0tx phy0assoc phy0radio 
+debian@beaglebone:/sys/class/leds/beaglebone:green:usr3$ echo none > trigger 
+debian@beaglebone:/sys/class/leds/beaglebone:green:usr3$ echo 1 > brightness 
+debian@beaglebone:/sys/class/leds/beaglebone:green:usr3$ echo 0 > brightness 
+debian@beaglebone:/sys/class/leds/beaglebone:green:usr3$ 
+#+end_src
+
+In this case, ~cat trigger~ results in a *[mmc1]*, and it is necessary to change its state, first to ~none~, then we are able to modify its brightness by echoing 1 or 0 to this *sysfs* virtual file system. 
+
+Delay example:
+
+#+begin_src 
+echo timer > trigger 
+debian@beaglebone:/sys/class/leds/beaglebone:green:usr3$ cat trigger 
+none rc-feedback rfkill-any kbd-scrolllock kbd-numlock kbd-capslock kbd-kanalock kbd-shiftlock kbd-altgrlock kbd-ctrllock kbd-altlock kbd-shiftllock kbd-shiftrlock kbd-ctrlllock kbd-ctrlrlock usb-gadget usb-host mmc0 mmc1 mmc2 [timer] oneshot disk-activity ide-disk mtd nand-disk heartbeat backlight gpio cpu cpu0 activity default-on panic netdev bluetooth-power hci0-power rfkill0 rfkill1 phy0rx phy0tx phy0assoc phy0radio 
+debian@beaglebone:/sys/class/leds/beaglebone:green:usr3$ ls
+brightness  delay_on  max_brightness  subsystem  uevent
+delay_off   device    power	      trigger
+debian@beaglebone:/sys/class/leds/beaglebone:green:usr3$ cat delay_on 
+500
+
+#+end_src
+*** Shutdown
+#+begin_src 
+>sudo shutdown -h now
+>sudo shutdown -h +5
+>sudo reboot
+#+end_src
+*** Node.js, Cloud9, and BoneSccript
+The BeagleBoard.org Linux distribution comes complete with a set of technologies that you can use to quickly get started with developing software and hardware applications on the boards. These are called Node.js, Cloud9, and BoneScript. *Node.js* is a programming language, *Cloud9* is an online software integrated development environment (IDE) in which you can write *Node.js* code, and *BoneScript* is a library of code for Node.js that allows you to interact with Beagle board hardware[Molloy@2019].
+**** Node.js
+Node.js is a platform for building network applications that uses the same JavaScript engine as the Google Chrome web browser. JavaScript is the programming language that is often used to create interactive interfaces within web pages.
+
+#+begin_src 
+debian@beaglebone:~$ cd es-jade/
+debian@beaglebone:~/es-jade$ mkdir node-test
+debian@beaglebone:~/es-jade$ cd node-test/
+debian@beaglebone:~/es-jade$ vi hello-jade.js
+#+end_src
+
+In the file add the next line of code:
+#+begin_src 
+console.log("Hello World!");
+#+end_src
+
+Then, run the script by using the ~node~ command:
+
+#+begin_src 
+debian@beaglebone:~/es-jade/node-test$ node hello-jade.js 
+Hello Jade-HS and world
+#+end_src
+
+The call to the ~node~ command works because the Node.js runtime environment is preinstalled on the BeagleBoard.org Linux image.
+
+Now lets try a more complex script; a web server.
+
+
+
 ** The linux file system and commands
 * day-2: Control versions and interfacing electronics
 ** git for control version2
