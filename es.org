@@ -1,8 +1,10 @@
-* Issues to solve 
-** which version of beagles to buy
+* Issues to solve [0%]
+** TODO which version of beagles to buy
 - I prefer to use the beaglebone black wi-fi, if it is possible to connect them to Jade's internet
 - Otherwise the ethernet version is preferred to use with usb-internet sharing
 - Install in computer the PuTTY software and some bash option to use. 
+** TODO Adding to day 1: https://linuxpropaganda.wordpress.com/2018/06/26/create-new-user-in-ubuntu-on-beaglebone-black/     
+* 
 * day-1: Introduction to the beagle-boards and basic applications
 ** Introduction  to the beagle boards. 
 *** Connection  
