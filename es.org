@@ -207,12 +207,12 @@ debian@beaglebone:/sys/class/leds/beaglebone:green:usr3$ cat delay_on
 >sudo reboot
 #+end_src
 *** Node.js, Cloud9, and BoneSccript
-The BeagleBoard.org Linux distribution comes complete with a set of technologies that you can use to quickly get started with developing software and hardware applications on the boards. These are called Node.js, Cloud9, and BoneScript. *Node.js* is a programming language, *Cloud9* is an online software integrated development environment (IDE) in which you can write *Node.js* code, and *BoneScript* is a library of code for Node.js that allows you to interact with Beagle board hardware[Molloy@2019].
-**** Node.js
+The BeagleBoard.org Linux distribution comes complete with a set of technologies that you can use to quickly get started with developing software and hardware applications on the boards. These are called Node.js, Cloud9, and BoneScript. *Node.js* is a programming language, *Cloud9* is an online software integrated development environment (IDE) in which you can write *Node.js* code, then *BoneScript* is a library of code for *Node.js* that allows you to interact with Beagle board hardware[Molloy@2019].
+**** A Node.js basic example
 Node.js is a platform for building network applications that uses the same JavaScript engine as the Google Chrome web browser. JavaScript is the programming language that is often used to create interactive interfaces within web pages.
 
-#+begin_src 
-debian@beaglebone:~$ cd es-jade/
+#+begin_src shell
+debian@beaglebone:~$ cd examples/
 debian@beaglebone:~/es-jade$ mkdir node-test
 debian@beaglebone:~/es-jade$ cd node-test/
 debian@beaglebone:~/es-jade$ vi hello-jade.js
@@ -226,14 +226,26 @@ console.log("Hello World!");
 Then, run the script by using the ~node~ command:
 
 #+begin_src 
-debian@beaglebone:~/es-jade/node-test$ node hello-jade.js 
+debian@beaglebone:~/examples/node-test$ node hello-jade.js 
 Hello Jade-HS and world
 #+end_src
 
 The call to the ~node~ command works because the Node.js runtime environment is preinstalled on the BeagleBoard.org Linux image.
 
 Now lets try a more complex script; a web server.
+**** A simple web server 
 
+#+begin_src java
+// A simple webserver running on port 5050
+var http = requiere('http')
+#+end_src
+**** cloud9
+Check running services:
+systemctl -all list-sockets
+Install cloud9:
+sudo apt reinstall c9-core-installer
+About running cloud9 service:
+systemctl status cloud9.service
 
 
 ** The linux file system and commands
