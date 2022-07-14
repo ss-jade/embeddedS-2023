@@ -1,39 +1,61 @@
 # Readme 
 This repository is developed to cover the embedded systems lecture at summer school in Jade University. 
 
-# Issues to solve 
+## Issues to solve 
 - [ ] TODO which version of beagles to buy
 - [ ] I prefer to use the beaglebone black wi-fi, if it is possible to connect them to Jade's internet
 - [ ] Otherwise the ethernet version is preferred to use with usb-internet sharing
 - [ ] Install in computer the PuTTY software and some bash option to use. 
 - [ ] TODO Adding to day 1: https://linuxpropaganda.wordpress.com/2018/06/26/create-new-user-in-ubuntu-on-beaglebone-black/     
 
-# day-1: Introduction to the single-board computers (SBC) and basic applications
-## Basic connections 
-### Basic USB connection for Beagle
+# day-1: Introduction to IoT systems and single-board computers (SBC) 
+## Accessing to SBCs by USB
+
 To connect into the SBC, attach the USB cable into the PC. Then, open the terminal and type:
 ```
 $ ip addr
-en0: flags=8863<UP,BROADCAST,SMART,RUNNING,SIMPLEX,MULTICAST> mtu 1500
-	ether bc:d0:74:35:a9:39
-	inet6 fe80::416:aee8:9fce:7def/64 secured scopeid 0xe
-	inet 192.168.6.2/24 brd 192.168.1.255 en0
-	inet6 2806:2f0:5040:8572:189b:329e:6e92:ec98/64 autoconf secured
-	inet6 2806:2f0:5040:8572:796d:4680:2f61:a858/64 autoconf temporary
+...
+...
+en10: flags=8863<UP,BROADCAST,SMART,RUNNING,SIMPLEX,MULTICAST> mtu 1500
+	ether f4:5e:ab:50:44:89
+	inet6 fe80::10a6:8287:252f:1a43/64 secured scopeid 0x16
+	inet 192.168.6.1/24 brd 192.168.6.255 en10
+...	
 ```
-you will obtain a lot of `enX` or `awdlx` devices, try to search for the new detected devices and specially the one with the ip 192.168.6.2 or 192.168.7.2 that belongs to the BeagleBone devices.
+you will obtain a lot of `enX` or `awdlx` devices, try to search for the new detected devices and specially the one with the ip 192.168.6.1 or 192.168.7.1 that belongs to the BeagleBone devices, and XXX for the Raspberry Pi.
 
-### TODO Basic USB connection for Raspberry Pi 4(RPi4)
-### TODO Enabling the SSH in the RPi4
-
-- Connect to a IP address
-- SSH connection 
-
+Then, use the `SSH` protocol, from now ssh, to access the board computer (please change the ip address by your ip device)
 ```
-ssh -X debian@192.168.7.2
-debian:temppwd
+$ ssh debian@192.168.6.2
+Debian GNU/Linux 10
+
+BeagleBoard.org Debian Buster IoT Image 2022-07-01
+Support: https://bbb.io/debian
+default username:password is [debian:temppwd]
+
+
+The programs included with the Debian GNU/Linux system are free software;
+the exact distribution terms for each program are described in the
+individual files in /usr/share/doc/*/copyright.
+
+Debian GNU/Linux comes with ABSOLUTELY NO WARRANTY, to the extent
+permitted by applicable law.
+Last login: Thu Jul  7 07:08:40 2022 from 2806:2f0:5040:8572:7d51:e754:675:cd2a
 ```
-### Error connection 
+
+
+## Accessing the RPi4 by ssh
+
+The SBCs can be accessed by ssh protocol if it is enable (disable by default at raspberry). Thus, we only need to know the SBC's ip or hostname. By default the raspberry Pi 4 is `raspberry`, but username and password is defined by the user ([raspberry Pi imager](link)). Then, to make `ssh` use:
+```
+$ ssh username@hostname.local  
+```
+or 
+```
+$ ssh username@ip
+```
+
+## Error connection 
 When getting the error:
 
 ```
@@ -45,66 +67,12 @@ and the key for the corresponding IP address 2806:103e:5:50f4:3ad2:69ff:fef9:46b
 ```
 you have to edit the '.ssh/known_hosts' file, and delete the lien  that contains the offending key and the corresponding IP address given the warning. 
 
-### Sharing the internet through usb 
-### Wi-Fi
-To connect to your Wireless network type the following command in the terminal window:
-
-```bash
-$sudo connmanctl
-connmanctl> enable wifi
-Enabled wifi
-connmanctl> scan wifi
-Scan completed for wifi
-connmanctl> services
-wifi_506583d4fc5e_544e434150413937414239_managed_psk
-connmanctl> agent on
-Agent registered
-connmanctl> connect wifi_506583d4fc5e_544e434150413937414239_managed_psk
-Passphrase? xxxxxxxxxxx
-connected wifi_506583d4fc5e_544e434150413937414239_managed_psk
-connmanctl> quit
-$ping www.google.com
-```
-
-
-
 ## Basic configuration
 
-### Changing the beaglebone's hostname
-First edit the `/etc/hostname` file by:
+### Updating the system and installing VIM
 
-```
-sudo vim /etc/hostanme
-```
-change the first and only line in this file to reflect your new hostname. 
-Then, edit the `/etc/hosts` file:
-
-```
-127.0.0.1       localhost
-127.0.1.1       hostname.localdomain    hostname
-
-# The following lines are desirable for IPv6 capable hosts
-::1     localhost ip6-localhost ip6-loopback
-ff02::1 ip6-allnodes
-ff02::2 ip6-allrouters
-```
-change the second line in both `hostname` instances for your new hostanme (must be the same previously defined).  
-
-Finally, reboot your beagle or raspberry device.
-
-### Changing the user's password
-
-To change the default user's password use:
-```
-$ passwd
-Changing password for debian.
-Current password: temppwd
-New password: xxxxxxx
-...
-```
-
-### Updating the system
 Before any further change, please update the system and packages by:
+
 ```
 $ sudo apt update
 [sudo] password for debian:
@@ -135,7 +103,9 @@ gpgv/oldstable 2.2.12-1+deb10u2 armhf [upgradable from: 2.2.12-1+deb10u1]
 libcpupower1/oldstable 4.19.249-2 armhf [upgradable from: 4.19.235-1]
 linux-cpupower/oldstable 4.19.249-2 armhf [upgradable from: 4.19.235-1]
 linux-libc-dev/oldstable 4.19.249-2 armhf [upgradable from: 4.19.235-1]
-
+```
+and then, make the upgrade of all required packages
+```
 $ sudo apt upgrade
 Reading package lists... Done
 Building dependency tree
@@ -153,26 +123,74 @@ The following packages will be upgraded:
 	...
 ```
 
-now we can start to install updated packages, lets try to install the `ntp` package to synchronise the clocks of computer that we will use later:
+now we can start to install updated packages, lets try to install the `VIM` package to use as our main source and text editor:
+
 ```
-$ sudo apt install  ntp
+$ sudo apt install vim
 Reading package lists... Done
-Building dependency tree
+Building dependency tree... Done
 Reading state information... Done
 The following additional packages will be installed:
-  libevent-core-2.1-6 libevent-pthreads-2.1-6 libopts25 sntp
-  Suggested packages:
-    ntp-doc
-	The following NEW packages will be installed:
-	  libevent-core-2.1-6 libevent-pthreads-2.1-6 libopts25 ntp sntp
-	  0 upgraded, 5 newly installed, 0 to remove and 0 not upgraded.
-	  Need to get 1092 kB of archives.
-	  After this operation, 2294 kB of additional disk space will be used.
-	  Do you want to continue? [Y/n] Y
+  libgpm2 vim-runtime
+Suggested packages:
+  gpm ctags vim-doc vim-scripts
+The following NEW packages will be installed:
+  libgpm2 vim vim-runtime
+0 upgraded, 3 newly installed, 0 to remove and 0 not upgraded.
+Need to get 7650 kB of archives.
+After this operation, 36.4 MB of additional disk space will be used.
+Do you want to continue? [Y/n] y
+Get:1 http://deb.debian.org/debian bullseye/main arm64 libgpm2 arm64 1.20.7-8 [35.9 kB]
+Get:2 http://deb.debian.org/debian bullseye/main arm64 vim-runtime all 2:8.2.2434-3+deb11u1 [6226 kB]
+Get:3 http://deb.debian.org/debian bullseye/main arm64 vim arm64 2:8.2.2434-3+deb11u1 [1388 kB]
+Fetched 7650 kB in 0s (17.0 MB/s)
+perl: warning: Setting locale failed.
+perl: warning: Please check that your locale settings:
+LANGUAGE = (unset),
+LC_ALL = (unset),
+LC_CTYPE = "UTF-8",
+LANG = "en_GB.UTF-8"
+are supported and installed on your system.
+perl: warning: Falling back to a fallback locale ("en_GB.UTF-8").
 	  .
 	  .
 	  .
 ```
+
+### Changing the bb's or rpi4's  hostname
+First edit the `/etc/hostname` file by:
+
+```
+$ sudo vim /etc/hostname
+```
+
+change the first and only line in this file to reflect your new hostname. 
+
+Then, edit the `/etc/hosts` file:
+```
+127.0.0.1       localhost
+127.0.1.1       hostname.localdomain    hostname
+
+# The following lines are desirable for IPv6 capable hosts
+::1     localhost ip6-localhost ip6-loopback
+ff02::1 ip6-allnodes
+ff02::2 ip6-allrouters
+```
+change the second line in both `hostname` (127.0.1.1)  instances for your new hostanme (must be the same previously defined).  
+
+Finally, reboot your beagle or raspberry device.
+
+### Changing the user's password
+
+To change the default user's password use:
+```
+$ passwd
+Changing password for debian.
+Current password: temppwd
+New password: xxxxxxx
+...
+```
+
 ### Time and internet access
 We previously have checked the internet access to our SBC-devices, now, let us use the internet to sync our time zone and locales for the further sync of commits in the git system. Thus, let us check the time at the device by:
 ```
@@ -188,7 +206,21 @@ $ sudo dpkg-reconfigure tzdata
 ```
 the, the system will have the correct time now.
 
-### SSH Key pairs
+If locale settings fail use:
+```
+$ sudo dpkg-reconfigure locales
+```
+and choose your desired locales, it is recommended to use international english with UTF-8 compatibility.
+
+### Oh My Bash
+
+Next, to make easier work with the bash system let us install the oh-my-bash tool:
+```
+$ bash -c "$(curl -fsSL https://raw.githubusercontent.com/ohmybash/oh-my-bash/master/tools/install.sh)"
+```
+you can go deeper and customize the themes and plugins at [oh-my-bash](https://ohmybash.nntoan.com/)
+
+## SSH Key pairs
 To create key pairs use:
 ```
 $ ssh-keygen -t ed25519 -C "your_email@example.com"
@@ -216,9 +248,3 @@ Now try logging into the machine, with:   "ssh 'debian@bbb-marx.local'"
 and check to make sure that only the key(s) you wanted were added.
 ```
 
-### Oh My Bash
-Next, to make easy work with the bash system let us install the oh-my-bash tool:
-```
-$ bash -c "$(curl -fsSL https://raw.githubusercontent.com/ohmybash/oh-my-bash/master/tools/install.sh)"
-```
-you can go deeper and customize the themes and plugins at [oh-my-bash](https://ohmybash.nntoan.com/)
