@@ -1,14 +1,7 @@
-# Readme 
+# Introduction
 This repository is developed to cover the embedded systems lecture at summer school in Jade University. 
 
-## Issues to solve 
-- [ ] TODO which version of beagles to buy
-- [ ] I prefer to use the beaglebone black wi-fi, if it is possible to connect them to Jade's internet
-- [ ] Otherwise the ethernet version is preferred to use with usb-internet sharing
-- [ ] Install in computer the PuTTY software and some bash option to use. 
-- [ ] TODO Adding to day 1: https://linuxpropaganda.wordpress.com/2018/06/26/create-new-user-in-ubuntu-on-beaglebone-black/     
-
-# day-1: Introduction to IoT systems and single-board computers (SBC) 
+# Part-1: Introduction to IoT systems and single-board computers (SBC) 
 ## Accessing to SBCs by USB
 
 To connect into the SBC, attach the USB cable into the PC. Then, open the terminal and type:
@@ -68,7 +61,7 @@ and the key for the corresponding IP address 2806:103e:5:50f4:3ad2:69ff:fef9:46b
 you have to edit the '.ssh/known_hosts' file, and delete the lien  that contains the offending key and the corresponding IP address given the warning. 
 
 ## Basic configuration
-
+Once you are able to connect or get in into the SBC, a basic configuration and package installation is required. The next section will guide you install Vim, the SBC's hostname, the user password, internet access and time, and finally to install a useful bash tool.
 ### Updating the system and installing VIM
 
 Before any further change, please update the system and packages by:
@@ -248,3 +241,5 @@ Now try logging into the machine, with:   "ssh 'debian@bbb-marx.local'"
 and check to make sure that only the key(s) you wanted were added.
 ```
 
+# Starting with the ESP32
+The next section will introduce the basics of programming the ESP32 with the Arduino IDE. The first codes allow us to use the GPIOs, serial communication, Wi-Fi, and finally the MQTT protocol. 
