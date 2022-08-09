@@ -1,3 +1,24 @@
+
+<!-- vim-markdown-toc GFM -->
+
+* [Introduction](#introduction)
+* [Part-1: Introduction to IoT systems and single-board computers (SBC)](#part-1-introduction-to-iot-systems-and-single-board-computers-sbc)
+	* [Accessing to SBCs by USB](#accessing-to-sbcs-by-usb)
+	* [Accessing the RPi4 by ssh](#accessing-the-rpi4-by-ssh)
+	* [Error connection](#error-connection)
+	* [Basic commands on the Bash](#basic-commands-on-the-bash)
+	* [Basic configuration](#basic-configuration)
+		* [Updating the system and installing VIM](#updating-the-system-and-installing-vim)
+		* [Changing the bb's or rpi4's  hostname](#changing-the-bbs-or-rpi4s--hostname)
+		* [Changing the user's password](#changing-the-users-password)
+		* [Time and internet access](#time-and-internet-access)
+		* [Oh My Bash](#oh-my-bash)
+	* [SSH Key pairs](#ssh-key-pairs)
+* [Starting with the ESP32](#starting-with-the-esp32)
+	* [Git](#git)
+
+<!-- vim-markdown-toc -->
+
 # Introduction
 This repository is developed to cover the embedded systems lecture at summer school in Jade University. 
 
@@ -60,6 +81,16 @@ and the key for the corresponding IP address 2806:103e:5:50f4:3ad2:69ff:fef9:46b
 ```
 you have to edit the '.ssh/known_hosts' file, and delete the lien  that contains the offending key and the corresponding IP address given the warning. 
 
+## Basic commands on the Bash ##
+Next are listing the most used and common commands on the bash-shell:
+- `ls`
+- `touch`
+- `rm`
+- `mkdir`
+- `cd`
+- `cp`
+
+let us play a little bit on bash.
 ## Basic configuration
 Once you are able to connect or get in into the SBC, a basic configuration and package installation is required. The next section will guide you install Vim, the SBC's hostname, the user password, internet access and time, and finally to install a useful bash tool.
 ### Updating the system and installing VIM
@@ -241,5 +272,23 @@ Now try logging into the machine, with:   "ssh 'debian@bbb-marx.local'"
 and check to make sure that only the key(s) you wanted were added.
 ```
 
-# Starting with the ESP32
+# Starting with the ESP32 #
 The next section will introduce the basics of programming the ESP32 with the Arduino IDE. The first codes allow us to use the GPIOs, serial communication, Wi-Fi, and finally the MQTT protocol. 
+
+Nevertheless, some basics of Git *Control Version System* is required before start.
+
+## Git
+
+Git is a system for version controller developed by Linus Torvalds in 2005 for developing the Linux Kernel. 
+
+Then, you can specify Git configuration settings with the git config command. One of the first things you did was set up your name and email address:
+```
+git config --global user.name "John Doe"
+git config --global user.email johndoe@example.com
+```
+also you can set the main editor or client to commit:
+```
+git config --global core.editor emacs
+```
+
+Now, try to create a new repository with two files: file-a and file-b, add some lines of code, and make a commit. Next, make some changes, and only commit the changes on file-a, the changes on file-b restore them to previous commit.
