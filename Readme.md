@@ -1,26 +1,16 @@
-
-<!-- vim-markdown-toc GFM -->
-
-* [Introduction](#introduction)
-* [Part-1: Introduction to IoT systems and single-board computers (SBC)](#part-1-introduction-to-iot-systems-and-single-board-computers-sbc)
-	* [Accessing to SBCs by USB](#accessing-to-sbcs-by-usb)
-	* [Accessing the RPi4 by ssh](#accessing-the-rpi4-by-ssh)
-	* [Error connection](#error-connection)
-	* [Basic commands on the Bash](#basic-commands-on-the-bash)
-	* [Basic configuration](#basic-configuration)
-		* [Updating the system and installing VIM](#updating-the-system-and-installing-vim)
-		* [Changing the bb's or rpi4's  hostname](#changing-the-bbs-or-rpi4s--hostname)
-		* [Changing the user's password](#changing-the-users-password)
-		* [Time and internet access](#time-and-internet-access)
-		* [Oh My Bash](#oh-my-bash)
-	* [SSH Key pairs](#ssh-key-pairs)
-* [Starting with the ESP32](#starting-with-the-esp32)
-	* [Git](#git)
-
-<!-- vim-markdown-toc -->
-
 # Introduction
-This repository is developed to cover the embedded systems lecture at summer school in Jade University. 
+This repository has been developed to cover the embedded systems lecture at the International Summer School at Jade University 2023. The repository will guide us along several topics until develop a final project. 
+
+Thus, the main idea is to become familiar with the Raspberry Pi Single Board Computer (SBC) and learn different methods of programming the device and get access to the hardware available by learning: 
+	1. SSH connection
+	2. Basic Shell commands
+	3. Basic configuration and use of `apt`
+	4. Installing applications (Vim)
+	5. Configuring Vim
+	6. Git commands
+	7. ESP32??? or  accessing ports and sensors
+	8. NodeJS
+
 
 # Part-1: Introduction to IoT systems and single-board computers (SBC) 
 ## Accessing to SBCs by USB
