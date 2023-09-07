@@ -1,0 +1,5 @@
+{
+  "dependencies": {
+    "node-red-node-pi-sense-hat": "^0.1.5"
+  }
+}
