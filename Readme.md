@@ -1,24 +1,52 @@
 # Introduction
 
-This repository has been developed to cover the embedded systems lecture at the International Summer School at Jade University 2023. The repository will guide us along several topics until we develop a final project. 
+This repository has been developed to cover the embedded systems lecture at the **International Summer School 2023 at Jade University**. The repository will guide us along several topics until we develop a final project. 
 
-Thus, the main idea is to become familiar with the Raspberry Pi Single Board Computer (SBC) and learn different methods of programming the device and get access to the hardware available by learning: 
+The main objective is to become familiar with the Raspberry Pi (RPi) Single Board Computer (SBC) by learning different methods of programming the device and getting access to the hardware available by the next general syllabus: 
 
-1. SSH connection with PuTTy
-2. Basic Shell commands
-3. Basic configuration and use of `apt`
-4. Installing applications (Vim)
-5. Configuring Vim
-6. Git commands
-7. ESP32??? or  accessing ports and sensors
-8. NodeJS
+Day 1: Introduction
+- Lecture's introduction
+- Students' background presentation
+- SSH connection with Power Shell (Windows OS)
+- Exploring the OS and Bash commands
+- Raspberry basic configuration
+	- `apt update`
+	- `hostname` and `passwd` 
+	- `ip adds`
+- Installing applications
+	- Vim (configuration and commands)
 
+Day 2: Scripting
+- Bash scripts (Temperature)
+- Repository documentation and markdown syntax
+- Git and GitHub (ssh-keys)
+- Git repositories (cloning, push and pull)
+- Tmux and Vim for developing
+- Temperature reading script using Python
+- NodeJS
+
+Day 3: Sense hat and GPIO
+- Introduction to Sense-Hat
+- Temperature readings from sense-hat
+- Matrix colors
+- RED-Node installation
+- GPIO basic application
+- Dashboard readings
+
+Day 4: Project developing/presentation
+- A full dashboard for GPIO control, humidity and temperature readings, IMU readings, and LED-RGB matrix control
+- Presentation about embedded systems, programming, and project development 
+
+---
 
 # Accessing the RPi4 by ssh
 
-The SBC can be accessed by the `ssh` protocol if it is enabled (disabled by default at Raspberry). Thus, we need to know the SBC's IP or hostname and own a username with a password. 
+The `ssh` protocol can give us access to the SBC if it is enabled (disabled by default at Raspberry). Thus, we need to know the SBC's IP or hostname and own a username with a password. 
 
-*By default, the RPi's hostname is `raspberry,` but the username and password are defined during the image creation process by the user ([raspberry Pi imager](link)).*
+By default, the RPi's hostname is `raspberry`, but the username and password are defined during the image creation process by the user [raspberry Pi imager](https://www.raspberrypi.com/software/).*
+
+
+![](https://imgur.com/dFG5wRy)
 
 Then, to make ssh, use:
 ```
@@ -43,67 +71,10 @@ Next are listed the most common commands on the bash-shell:
 
 **--Let us practice the commands on the bash terminal--**
 
-# GPIO from bash
-
-To access RBPi's GPIO hardware from programs, there are various tools and methods available. However, using `sysfs` is a straightforward approach that is backed by the **Linux kernel** and enables the devices to be visible from the file system. This allows users to work from the command line (terminal) without the need to develop any code. For basic applications, the `sysfs` method is ideal, as it can be used interactively or by incorporating the commands into shell scripts.
-
-`sysfs` is a pseudo filesystem provided by the **Linux kernel** that makes information about various kernel subsystems, hardware devices, and device drivers available in user space through virtual files. The GPIO devices appear as part of `sysfs`.
-
-## First steps
-
-The system has some `sysfs` GPIO drivers already loaded, you can search for them at `/sys/class/gpio/`:
-
-```
-ls /sys/class/gpio
-export  gpiochip0  gpiochip504  unexport
-```
-
-We'll look at how to use this interface next. **Note that the device names starting with "gpiochip" are the GPIO controllers and we won't directly use them.**
-
-Next, the basic steps to enable a GPIO pin from the `sysfs` interface are:
-
-1. Export the pin.
-2. Set the pin direction (input or output).
-3. If there is an output pin, set the level to low or high.
-4. If there is an input pin, read the pin's level (low or high).
-5. When the gpio is not used anymore, it is recommended to unexport the pin.
-
-Thus, to make available the GPIO24 as an output and write a logic 1, we execute at the terminal:
-
-Export the GPIO24 by
-
-```
-echo 24 >> /sys/class/gpio/export
-```
-
-then, the `gpio24` linksys file is available at
-
-```
-ls /sys/class/gpio/
-export  gpio24  gpiochip0  gpiochip504  unexport
-```
-
-you can go now and observe inside the `gpio24` folder a series of configuration files
-
-```
-ls /sys/class/gpio/gpio24/
-active_low  device  direction  edge  power  subsystem  uevent  value
-```
-
-the ones that we require for now are the `direction` and `value`, then, to make the GPIO24 an output write a logic 1 (3V):
-
-```
-echo out >> /sys/class/gpio/gpio24/direction
-echo 1 >> /sys/class/gpio/gpio24/value
-```
-
-## Raspberry Pi 3 pinout
-
-![Raspberry Pi 3 details](./gpio-rpi3.jpg)
 
 # RPi4 configuration
 
-Once you can connect or get in into the SBC, a basic configuration and package installation is required. The next sections will guide you to install Vim, configure the SBC's hostname, the user password, internet access and time, and finally install a useful bash tool.
+Once you can connect or get into the SBC, a basic configuration and package installation is required. The next sections will guide you to install Vim, configure the SBC's hostname, the user password, internet access and time, and finally install a useful bash tool.
 
 ## Updating the system and installing Vim
 
@@ -117,13 +88,7 @@ and then make the upgrade of all required packages
 ```
 $ sudo apt upgrade
 Reading package lists... Done
-Building dependency tree
-Reading state information... Done
-Calculating upgrade... Done
-The following packages will be upgraded:
-  bb-customizations bbb.io-kernel-4.19-ti bbb.io-kernel-tasks dirmngr gnupg gnupg-l10n gnupg-utils gpg gpg-agent
-    gpg-wks-client gpg-wks-server gpgconf gpgsm gpgv libcpupower1 linux-cpupower linux-libc-dev
-	17 upgraded, 0 newly installed, 0 to remove and 0 not upgraded.
+....
 	Need to get 9908 kB of archives.
 	After this operation, 69.6 kB of additional disk space will be used.
 	Do you want to continue? [Y/n] Y
@@ -132,14 +97,99 @@ The following packages will be upgraded:
 	...
 ```
 
-Now we can start to install updated packages. Let us install the `Vim` application to use as our main source and text editor:
+## Special cases
+
+Sometimes, the Debian OS needs to be configured for time zones and locales:
+```
+sudo dpkg-reconfigure locales
+sudo dpkg-reconfigure tzdata
+sudo date -s "6 Sep 2023 13:49:00" 
+``` 
+
+## Time and Internet access
+We previously checked the internet access to our SBC devices, now, let us use the internet to sync our time zone and locales for the further sync of commits in the git system. 
+
+Thus, let us check the time at the device by:
+```
+$ date
+$ systemctl status time-sync.target
+```
+if the time is wrong, use the next command and follow the instructions:
+```
+$ sudo dpkg-reconfigure tzdata
+```
+then the system will have the correct time now.
+
+If locale settings fail, use:
+```
+$ sudo dpkg-reconfigure locales
+```
+and choose your desired locales; it is recommended to use international English with UTF-8 compatibility.
+---
+Now, we can start to install updated packages. Let us install the `Vim` application to use as our main source and text editor:
 ```
 $ sudo apt install vim
 ```
 
 ## Vim editor and commands
 
-Put here information about Vim and its usage...
+Vim has two modes.
+
+1. Insert mode (Where you can just type like normal text editor. Press `i` for insert mode)
+
+2. Command mode (Where you give commands to the editor to get things done. Press `ESC` for command mode)
+
+The most basic Vim commands are:
+
+- `:e myfile`	Opens “myfile” for editing
+- `:w`	Save the file
+- `:sav myfile.txt`	Saves the file as myfile.txt
+- `:x`	Write changes to file and exit
+- `:q!`	Quit without saving changes
+- `:q`	Quit Vim
+
+## Vim basic configuration file
+Vim can be configured to highlight syntax and for more advanced settings (`~/.vimrc`):
+```
+" ------------------
+"         __
+" .--.--.|__|.--------.----.----.
+" |  |  ||  ||        |   _|  __|
+"  \___/ |__||__|__|__|__| |____|
+" ------------------
+"
+" Basic settings
+" --------------
+set nocompatible
+filetype plugin indent on
+syntax enable
+
+set number relativenumber
+set path+=**
+set wildmode=longest,list,full
+set encoding=UTF-8
+set cursorline
+set showmatch   " matching brackets
+set linebreak
+set ignorecase  " case insensitive matching
+set smartcase   " smart case matching
+"set clipboard+=unnamedplus
+set mouse=a
+set tabstop=4
+set shiftwidth=4
+set softtabstop=4
+set spelllang=en_us
+set showtabline=2
+set laststatus=2
+set backspace=indent,eol,start  " more powerful backspacing
+" ------------------
+" Basic styling
+" ------------------
+highlight Comment cterm=italic
+highlight CursorLine ctermbg=Black cterm=NONE
+highlight CursorLineNr ctermbg=Black cterm=bold ctermfg=Green
+highlight LineNr ctermbg=Black ctermfg=White
+```
 
 ## Changing the RPi4's hostname
 
@@ -174,25 +224,6 @@ Current password: temppwd
 New password: xxxxxxx
 ```
 
-## Time and Internet access
-We previously checked the internet access to our SBC devices, now, let us use the internet to sync our time zone and locales for the further sync of commits in the git system. 
-
-Thus, let us check the time at the device by:
-```
-$ date
-$ systemctl status time-sync.target
-```
-if the time is wrong, use the next command and follow the instructions:
-```
-$ sudo dpkg-reconfigure tzdata
-```
-then the system will have the correct time now.
-
-If locale settings fail, use:
-```
-$ sudo dpkg-reconfigure locales
-```
-and choose your desired locales, it is recommended to use international English with UTF-8 compatibility.
 
 ## Oh My Bash tool
 
@@ -202,7 +233,33 @@ $ bash -c "$(curl -fsSL https://raw.githubusercontent.com/ohmybash/oh-my-bash/ma
 ```
 you can go deeper and customize the themes and plugins at [oh-my-bash web page](https://ohmybash.nntoan.com/).
 
-# SSH Key pairs (optional)
+
+# Bash scripting
+
+[Example](https://github.com/ss-jade/temp-bash-example)
+```
+#! /bin/bash
+
+TEMP_PATH=/sys/class/thermal/thermal_zone0/temp
+
+function printTemp
+{
+	cat $TEMP_PATH
+}
+
+	printTemp
+```
+
+# Markdown syntax
+Markdown is an extensive syntax used for repositories' basic documentation. A basic [cheatsheet can be checked here.](https://paperhive.org/help/markdown)
+
+# Github
+1. Create an account in [Github](https://github.com)
+2. Create ssh-key pairs in the RPi4 and save the `*.pub` content at [SSH keys](https://github.com/settings/keys)
+3. Create a remote repository and follow the instructions to upload your local copy
+4. Check the remote repository
+
+## SSH Key pairs for Github (~~optional~~)
 
 To create key pairs for SSH, use:
 ```
@@ -217,8 +274,8 @@ $ ssh-copy-id -i ~/.ssh/id_ed25519.pub debian@bbb-marx.local
 
 ---
 
-# Git tool
-In 2005, *Linus Torvalds* created Git, a version controlling system specifically for developing the Linux Kernel.
+## Git configuration
+In 2005, *Linus Torvalds* created Git, a version-controlling system specifically for developing the Linux Kernel.
 
 Let us start by specifying the Git configuration settings with the `git config` command. Thus, one of the first things you need is to set up your name and email address:
 ```
@@ -230,13 +287,39 @@ also, you can set the main editor or client to commit:
 git config --global core.editor vim
 ```
 
-Now, try to create a new repository with two files: file-a and file-b, add some lines of code, and make a commit. Next, make some changes, and only commit the changes on file-a, the changes on file-b restore them to the previous commit.
+Now, try to create a new repository with two files: file-a and file-b. Add some lines of code, and make a commit. Next, make some changes, and only commit the changes on file-a. The changes on file-b restore them to the previous commit.
 
-## Github
-- Create an account in [Github](https://github.com)
-- Create ssh-key pairs in the RPi4 and save the `*.pub` content at [SSH keys](https://github.com/settings/keys)
-- Create a remote repository and follow the instructions to upload your local copy
-- Check the remote repository
 
-# Starting with the ESP32 
-The next section will introduce the basics of programming the ESP32 with the Arduino IDE. The first code allows using the GPIOs, serial communication, Wi-Fi, and finally, the MQTT protocol. 
+# Tmux and Vim for developing
+# Temperature reading script using Python
+# NodeJS
+
+## Introduction to Node.js
+Node.js is a platform for building network applications that uses the same  JavaScript engine as the Google Chrome web browser. JavaScript is the programming language that is often used to create interactive interfaces within web pages.   Node.js is a runtime environment and library that allows running JavaScript on the server-side, without the need for a browser, directly at the Linux shell prompt.
+
+Node.js uses an event-driven, nonblocking input/output model. Event-driven   programming is commonplace in user-interface programming. It essentially   means that the program’s flow of execution is driven by user actions or messages   that are transferred from other threads or processes. Interestingly, the fact that   it uses nonblocking I/O means that it is suitable for interfacing to the input/output pins on your board, safely sharing resources with other applications.
+
+## Installing nodejs and npm 
+
+```
+sudo su
+curl -fsSL https://deb.nodesource.com/setup_17.x | bash -
+```
+
+```
+sudo apt install nodejs
+```
+## Hello world
+
+```
+console.log("Hello web!!!");
+```
+
+
+   ---
+   
+# Day 3
+
+# Day 4
+
+
