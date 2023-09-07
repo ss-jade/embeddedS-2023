@@ -291,13 +291,102 @@ Now, try to create a new repository with two files: file-a and file-b. Add some 
 
 
 # Tmux and Vim for developing
+Performing various actions on the command line can be an efficient and rewarding experience. However, newcomers might find the process quite challenging and disorganizing.
+
+That is where Tmux application comes in handy, as it allows splitting a single window into several others. In other words, it enables you to simultaneously perform several tasks on the same screen.
+
+This tutorial will show you how to install and use Tmux. 
+
+
+## Tmux shortcuts & cheatsheet
+start new:
+
+	tmux
+
+start new with session name:
+
+    tmux new -s myname
+
+attach:
+
+    tmux a  #  (or at, or attach)
+
+attach to named:
+
+    tmux a -t myname
+
+list sessions:
+
+    tmux ls
+
+<a name="killSessions"></a>kill session:
+
+    tmux kill-session -t myname
+
+<a name="killAllSessions"></a>Kill all the tmux sessions:
+
+    tmux ls | grep : | cut -d. -f1 | awk '{print substr($1, 0, length($1)-1)}' | xargs kill
+
+In tmux, hit the prefix `ctrl+b` (my modified prefix is ctrl+a) and then:
+
+## List all shortcuts
+To see all the shortcut keys in tmux simply use the `bind-key ?` in my case that would be `CTRL-B ?`
+
+## Sessions
+
+    :new<CR>  new session
+    s  list sessions
+    $  name session
+
+## Windows (tabs)
+
+    c  create window
+    w  list windows
+    n  next window
+    p  previous window
+    f  find window
+    ,  name window
+    &  kill window
+
+## Panes (splits) 
+
+    %  vertical split
+    "  horizontal split
+    
+    o  swap panes
+    q  show pane numbers
+    x  kill pane
+    +  break pane into window (e.g. to select text by mouse to copy)
+    -  restore pane from window
+    ⍽  space - toggle between layouts
+    <prefix> q (Show pane numbers, when the numbers show up type the key to goto that pane)
+    <prefix> { (Move the current pane left)
+    <prefix> } (Move the current pane right)
+    <prefix> z toggle pane zoom
 # Temperature reading script using Python
+Use the next code:
+```
+#! /usr/bin/python
+
+TEMP_PATH="/sys/class/thermal/thermal_zone0/"
+
+fo = open(TEMP_PATH + "temp","r")
+temp=fo.read()
+print(temp)
+```
+
+Then, run the script by calling `python main.py`
+
+**Create a Python code to call temperature readings, compute the average temperature, and import both functions from an Interactive Python shell example.**
+
 # NodeJS
 
 ## Introduction to Node.js
-Node.js is a platform for building network applications that uses the same  JavaScript engine as the Google Chrome web browser. JavaScript is the programming language that is often used to create interactive interfaces within web pages.   Node.js is a runtime environment and library that allows running JavaScript on the server-side, without the need for a browser, directly at the Linux shell prompt.
+Node.js is a platform for building network applications. Nodejs uses the same JavaScript engine as the Google Chrome web browser, and JavaScript is the programming language that is often used to create interactive interfaces within web pages.   
 
-Node.js uses an event-driven, nonblocking input/output model. Event-driven   programming is commonplace in user-interface programming. It essentially   means that the program’s flow of execution is driven by user actions or messages   that are transferred from other threads or processes. Interestingly, the fact that   it uses nonblocking I/O means that it is suitable for interfacing to the input/output pins on your board, safely sharing resources with other applications.
+Thus, Node.js is a runtime environment and library that allows running JavaScript on the server-side, without the need for a browser, directly at the Linux shell prompt.
+
+Node.js uses an event-driven, non-blocking input/output model. Event-driven programming is commonplace in user-interface programming. It essentially means that the program’s flow of execution is driven by user actions or messages that are transferred from other threads or processes. Interestingly, the fact that it uses nonblocking I/O means that it is suitable for interfacing with the input/output pins on your board, safely sharing resources with other applications.
 
 ## Installing nodejs and npm 
 
@@ -312,7 +401,7 @@ sudo apt install nodejs
 ## Hello world
 
 ```
-console.log("Hello web!!!");
+console.log("Hello World !!!");
 ```
 
 
