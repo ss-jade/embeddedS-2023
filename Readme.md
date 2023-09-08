@@ -15,15 +15,15 @@ Day 1: Introduction
 	- `ip adds`
 - Installing applications
 	- Vim (configuration and commands)
+	- Bash scripts (Temperature)
 
 Day 2: Scripting
-- Bash scripts (Temperature)
+- NodeJS (Server)
 - Repository documentation and markdown syntax
 - Git and GitHub (ssh-keys)
 - Git repositories (cloning, push and pull)
 - Tmux and Vim for developing
 - Temperature reading script using Python
-- NodeJS
 
 Day 3: Sense hat and GPIO
 - Introduction to Sense-Hat
@@ -46,7 +46,9 @@ The `ssh` protocol can give us access to the SBC if it is enabled (disabled by d
 By default, the RPi's hostname is `raspberry`, but the username and password are defined during the image creation process by the user [raspberry Pi imager](https://www.raspberrypi.com/software/).*
 
 
-![](https://imgur.com/dFG5wRy)
+![Imgur](https://imgur.com/dFG5wRy.jpg)
+
+
 
 Then, to make ssh, use:
 ```
@@ -319,11 +321,11 @@ list sessions:
 
     tmux ls
 
-<a name="killSessions"></a>kill session:
+kill session:
 
     tmux kill-session -t myname
 
-<a name="killAllSessions"></a>Kill all the tmux sessions:
+Kill all the tmux sessions:
 
     tmux ls | grep : | cut -d. -f1 | awk '{print substr($1, 0, length($1)-1)}' | xargs kill
 
@@ -363,6 +365,9 @@ To see all the shortcut keys in tmux simply use the `bind-key ?` in my case that
     <prefix> { (Move the current pane left)
     <prefix> } (Move the current pane right)
     <prefix> z toggle pane zoom
+
+---
+
 # Temperature reading script using Python
 Use the next code:
 ```
@@ -378,6 +383,8 @@ print(temp)
 Then, run the script by calling `python main.py`
 
 **Create a Python code to call temperature readings, compute the average temperature, and import both functions from an Interactive Python shell example.**
+
+---
 
 # NodeJS
 
