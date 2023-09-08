@@ -25,18 +25,20 @@ Day 2: Scripting
 - Tmux and Vim for developing
 - Temperature reading script using Python
 
-Day 3: Sense hat and GPIO
-- Introduction to Sense-Hat
-- Temperature readings from sense-hat
-- Matrix colors
-- RED-Node installation
-- GPIO basic application
-- Dashboard readings
+Day 3: IoT devices 
+- ESP32 IoT device
+- Introduction to the ESP32 (Hola Mundo - LED)
+- Wi-Fi Access protocols
+- Creating a `Mosquitto` (MQTT) server
+- ESP32 and Server test (MQTTX)
+- Work on your project development (basic development)
 
-Day 4: Project developing/presentation
-- A full dashboard for GPIO control, humidity and temperature readings, IMU readings, and LED-RGB matrix control
+Day 4: Examination and project presentations
+- Examination (30 minutes)
+- A full dashboard for GPIO control, humidity and temperature readings, and ESP32 measurements
 - Presentation about embedded systems, programming, and project development 
-
+- Group class picture
+- Farewell
 ---
 
 # Accessing the RPi4 by ssh
@@ -414,8 +416,323 @@ console.log("Hello World !!!");
 
    ---
    
-# Day 3
+# Day 3: IoT devices 
+# ESP32 IoT device
 
-# Day 4
+## Introduction
+This section shows the basic usage of the Arduino IDE with the ESP32 development board by implementing a blinking LED and serial communication project.
+
+## Programming the ESP32 Board
+For this example, we will use the **ESP32-C3-WROOM-02**. Below, you can see the pinout layout.
+
+![](https://mischianti.org/wp-content/uploads/2023/04/ESP32-C3-DevKitC-02-pinout-high.png)
+
+
+
+then, we need to install the Arduino IDE to program the ESP32.
+
+## Installing the Arduino IDE
+
+The Arduino IDE 2.1.1 can be installed on *Windows, MacOS, or GNU Linux*. The Windows installation is commonly done using an installer. In the case of the *GNU Linux*, it is highly recommended to use the distribution's package manager. In my case, the ArchLinux manager is *pacman*, thus use:
+
+```
+sudo pacman -Sy arduino
+[sudo] password for gmarx:
+:: Synchronizing package databases...
+ core                                 157.9 KiB   235 KiB/s 00:01 [####################################] 100%
+ extra                               1710.6 KiB  3.66 MiB/s 00:00 [####################################] 100%
+ community                              6.7 MiB  7.49 MiB/s 00:01 [####################################] 100%
+warning: arduino-1:1.8.19-1 is up to date -- reinstalling
+resolving dependencies...
+looking for conflicting packages...
+
+Packages (1) arduino-1:1.8.19-1
+
+Total Installed Size:  59.36 MiB
+Net Upgrade Size:       0.00 MiB
+
+:: Proceed with installation? [Y/n]
+```
+
+
+## Adding the ESP32 Boards
+The addition of the ESP32 boards requires installing the ESP32 boards on Arduino IDE by `Tools -> Board -> Boards Manager ...` and writing `ESP32` to list the tools required to work with:
+![](https://imgur.com/3n7YJWL.png)
+
+## ESP32 Hello World
+Before programming the ESP32 board, we must select the proper board in the `Board` tool. Thus, again open and select the `Tools -> Bord -> ESP32C3 Dev Module`. Then, paste the next code section to test the ESP32 board:
+
+![](https://imgur.com/zTzcuOg.png)
+
+```c
+/*
+ *
+ * Example code for ESP32-S:
+ * The code blinks the onboard LED (at D2 in GPIO 02) every 0.500 seconds.
+ * The code also prints by serial communcation the word "Hello" during the
+ * ON stage of the LED, and then prints "World" during the OFF.
+ * Gerardo Marx 19/Jul/2023
+ */
+
+// this variable is defined in pins_arduino.h for DOIT ESP32 DEVKIT-02
+// int LED_BUILTIN = 02;
+int LED_ONBOARD = 02;
+
+void setup() {
+  // put your setup code here, to run once:
+  pinMode(LED_BUILTIN, OUTPUT);
+  //serial  monitor setup
+  Serial.begin(115200);
+      }
+
+void loop() {
+  // put your main code here, to run repeatedly:
+  Serial.print("ON");
+  digitalWrite(LED_BUILTIN, HIGH);
+  delay(500);
+  // after delay
+  Serial.print(" - OFF\n");
+  digitalWrite(LED_BUILTIN, LOW);
+  delay(500);
+}
+```
+
+Next, compile and upload the code generated into the board.
+
+# Wi-Fi Access protocols
+```c
+#include <WiFi.h>
+ 
+// Replace with your own network credentials
+const char* ssid = "u-boot";
+const char* password = "faow64rgoqazef";
+ 
+void setup(){
+ 
+    Serial.begin(115200);
+ 
+    WiFi.mode(WIFI_STA);
+    WiFi.begin(ssid, password);
+    Serial.println("\nConnecting to WiFi Network ..");
+ 
+    while(WiFi.status() != WL_CONNECTED){
+        Serial.print(".");
+        delay(500);
+    }
+ 
+    Serial.println("\nConnected to the WiFi network");
+    Serial.print("Local ESP32 IP: ");
+    Serial.println(WiFi.localIP());
+}
+ 
+void loop(){
+    // Do Nothing
+}
+```
+
+# Creating a `Mosquitto` (MQTT) server
+
+## Introduction
+This repository includes the basic information to mount a server using **Node-RED** as a Dashboard and also working as an MQTT server using **Mosquitto**. The MQTT server is tested with an ESP32 client to publish random numbers every two seconds.
+
+The general scheme is shown below, the complete environment requires a client, MQTT server or broker, and an MQTT client that works like a user interface (dashboard).
+
+The basic communication scheme could work like this:  
+
+1. The ESP32 starts the communication chain by sending a text message to the broker. The broker can be public or local.
+
+2. Depending on the code, the sending message can be replicated to all the connected clients in the *topic*.
+
+3. Finally, a web server based on *Node-RED* will read the data in the broker to be displayed in the *User Interface*.
+
+
+![mqttesp32](https://github.com/ss-jade/mqtt-server-raspberry/blob/main/Imagenes/mqttesp32.PNG?raw=true)
+
+
+## Installing Mosquitto
+
+For the Raspberry Pi, based on Debian's distribution, we can use the following code:
+
+```bash
+sudo apt update
+sudo apt upgrade
+sudo apt install mosquitto
+```
+
+To execute *mosquitto* and enable it every time the system starts:
+
+```
+sudo systemctl enable mosquitto.service
+```
+
+## Configuring the Mosquitto server
+
+First, replace the default configuration file with the file provided in this repository:
+
+```
+sudo cp ./mosquitto.conf /etc/mosquitto/mosquitto.conf
+```
+
+The file content is:
+```
+persistence true
+listener 1883
+persistence_location /var/lib/mosquitto/
+connection_messages true
+allow_anonymous true
+password_file /etc/mosquitto/passwd
+```
+
+then, create the password file instanced on the `mosquitto.conf` file
+
+```
+sudo touch /etc/mosquitto/passwd
+```
+finally, restart the service:
+
+    sudo systemctl restart mosquitto
+
+## Node-RED installation
+To install **nodejs** write in terminal:
+```
+sudo apt update
+sudo apt install nodejs
+sudo apt install npm
+```
+
+Then, let us install the *Node-RED* app and the *Dashboard* complement by using the *Node Package Manager*:
+
+```
+npm install node-red
+npm install node-red-dashboard
+```
+Now, we require to run in the background the app and verify that *node-RED* is running:
+```
+node-red &
+sudo netstat -plnt
+```
+then, to get access to *node-RED* go to your web browser at `rasp-hostname.local:1880` or `rasp-ip:18080`.
+
+## A flow process in Node-RED
+A basic process is implemented on *Node-RED* to test the mqtt protocol. Thus, add the next blocks:
+
+1. `mqtt in` from network group
+2. `debug` from common
+3. `chart` from dashboard
+
+Click on *Add new mqtt-brocker*, then, in the *Connection* tab, set *Name* to Rasp, point the server to the Raspberry's IP or hostname and port 1883. Leave unchanged the *Security* and *Message* tabs and click on the **Add** button. 
+
+Finally, set the topic to `data/esp32` and the output to `String` in the mqtt properties' node:
+
+Next, click on the `Deploy` button to check if the process can connect to the Broker:
+![](./deploy.png) 
+
+Visit the `hostname-or-ip/ui` to see the output generated by the MQTT client.
+
+**Note: You can also check the generated data on the Arduino IDE serial tools.**
+
+---
+
+# ESP32 and Server test (MQTTX)
+In this project, we will connect ESP32 to a free public MQTT server operated and maintained by EMQX MQTT Cloud. Thus, we will use the Arduino IDE to program the ESP32. EMQX Cloud is a secure MQTT IoT cloud service platform launched by EMQ. It provides MQTT 5.0 access service with one-stop operation and maintenance management and a unique isolation environment.
+
+![](https://assets.emqx.com/images/d6265585d6257fc02c722fe45888bdac.png?imageMogr2/thumbnail/1520x)
+
+First, install the `PubSubClient` library with `Project -> Load library -> Library manager... -> Search PubSubClient -> Install PubSubClient by Nick O’Leary`
+
+![](https://assets.emqx.com/images/cb7b0228aa91bf300eec5a725da159d3.png?imageMogr2/thumbnail/1520x)
+
+```c
+// Summer School 2023
+// ESP32 test code for MQTT protocol
+// Gerardo Marx
+
+#include <WiFi.h>
+#include <PubSubClient.h>
+
+// WiFi configuration
+const char *ssid = "u-boot"; // WiFi name
+const char *password = "faow64rgoqazef";  // WiFi password
+WiFiClient espClient;
+
+// mqtt brocker config:
+const char *mqttBrocker = "broker.emqx.io";
+const char *topic = "esp32/test";
+const char *mqttUsername = "emqx";
+const char *mqttPassword = "public";
+const int mqttPort = 1883;
+PubSubClient client(espClient);
+
+
+void setup(){
+  //serial communication
+  Serial.begin(115200);
+  WiFi.begin(ssid, password);
+  while(WiFi.status() != WL_CONNECTED){
+    delay(500);
+    Serial.print("Connecting to ");
+    Serial.println(ssid); 
+  }
+  Serial.println("Connection done.");
+  //connecting to a mqtt brocker:
+  client.setServer(mqttBrocker, mqttPort);
+  client.setCallback(callback);
+  while(!client.connected()){
+    String clientID = "esp32-gmarx-";
+    clientID += String(WiFi.macAddress());
+    Serial.printf("The %s tries to connect to mqtt borcker...\n",clientID.c_str());
+    if(client.connect(clientID.c_str(), mqttUsername, mqttPassword)){
+      Serial.println("mqtt brocker connected");
+    }
+    else {
+      Serial.print("mqtt connection failed");
+      Serial.println(client.state());
+      delay(2000);
+    }
+  }
+  //once connected publish and suscribe:
+  client.publish(topic, "Hi EMQX broker I'm a ESP32 at Jade-HS:)");
+  client.subscribe(topic);
+}
+
+void loop(){
+  client.loop();
+}
+
+void callback(char *topic, byte *payload, unsigned int length){
+  Serial.print("Message recived in topic: ");
+  Serial.println(topic);
+  Serial.print("The message is: ");
+  for(int i=0;i<length; i++){
+    Serial.print((char) payload[i]);
+  }
+  Serial.println();
+  Serial.println("-+-+-+End+-+-+-+");
+}
+```
+
+# Work on your project development (basic development)
+
+```
+void loop(){  
+  client.loop();
+  char str[16];
+  sprintf(str, "%u", 33+random(1));
+  client.publish("esp32/test", str);
+  Serial.println(str);
+  delay(2000);
+}
+```
+
+# Day 4: Examination and project presentations
+
+- [Examination] (30 minutes)
+- A full dashboard for GPIO control, humidity and temperature readings, and ESP32 measurements
+- Presentation about embedded systems, programming, and project development 
+- [Feedback from students](https://docs.google.com/forms/d/e/1FAIpQLSc8JfLrkZ7F45bnKkYhjfrcDCHwme3CZPVzi5aIqzAj13JLlQ/viewform?usp=sf_link)
+- Group class picture
+- Farewell
+
+
 
 
