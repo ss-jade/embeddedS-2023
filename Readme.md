@@ -726,7 +726,7 @@ void loop(){
 
 # Day 4: Examination and project presentations
 
-- [Examination] (30 minutes)
+- [Examination](https://docs.google.com/forms/d/e/1FAIpQLSdhd5HpaSMVm6rtpBq1mmi6V4d-Sda5Cp-Xea2w8i9B-g6WkA/viewform?usp=sf_link)
 - A full dashboard for GPIO control, humidity and temperature readings, and ESP32 measurements
 - Presentation about embedded systems, programming, and project development 
 - [Feedback from students](https://docs.google.com/forms/d/e/1FAIpQLSc8JfLrkZ7F45bnKkYhjfrcDCHwme3CZPVzi5aIqzAj13JLlQ/viewform?usp=sf_link)
